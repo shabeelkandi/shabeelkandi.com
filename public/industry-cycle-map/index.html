@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Industry Cycle Map</title>
+<meta name="description" content="Fifty-nine cyclical gauges, from Brent crude to office vacancy, placed on one boom-bust wave. Cycle positions as of 31 October 2026.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a research note. Masthead, thesis, one master wave carrying every gauge, three signal lists,
+   then seven sector waves each followed by its reading table. Colour is temperature: cold blue at the
+   trough, hot red at the peak, neutral on the slopes; hollow dots mark the zones beside each extreme. */
+:root {
+  --bg: #f3f3ee;
+  --surface: #fbfbf8;
+  --ink: #151a24;
+  --ink-2: #4a5061;
+  --muted: #7a808d;
+  --grid: #dedcd3;
+  --grid-strong: #c4c2b8;
+  --cold: #1c5cab;
+  --hot: #b92f2a;
+  --neutral: #8d919c;
+  --cold-wash: rgba(28, 92, 171, 0.07);
+  --hot-wash: rgba(185, 47, 42, 0.07);
+  --band: rgba(21, 26, 36, 0.025);
+  --callout: #ecefe6;
+  --display: "Barlow Condensed", "Arial Narrow", "Helvetica Neue", sans-serif;
+  --body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111317; --surface: #191c22; --ink: #ebeae3; --ink-2: #b8b7ae; --muted: #878b94;
+    --grid: #2a2e36; --grid-strong: #3d424c; --cold: #3b7fe3; --hot: #ee6058; --neutral: #8a8e97;
+    --cold-wash: rgba(59, 127, 227, 0.12); --hot-wash: rgba(238, 96, 88, 0.12);
+    --band: rgba(235, 234, 227, 0.03); --callout: #1f232b;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111317; --surface: #191c22; --ink: #ebeae3; --ink-2: #b8b7ae; --muted: #878b94;
+  --grid: #2a2e36; --grid-strong: #3d424c; --cold: #3b7fe3; --hot: #ee6058; --neutral: #8a8e97;
+  --cold-wash: rgba(59, 127, 227, 0.12); --hot-wash: rgba(238, 96, 88, 0.12);
+  --band: rgba(235, 234, 227, 0.03); --callout: #1f232b;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: var(--body); font-size: 16px; line-height: 1.5;
+  padding-block: 0 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+a { color: var(--cold); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--cold); outline-offset: 2px; }
+.wrap { max-width: 1080px; margin: 0 auto; }
+h1, h2, h3 { font-family: var(--display); font-weight: 600; letter-spacing: 0.005em; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(40px, 7vw, 68px); line-height: 0.98; font-weight: 700; }
+h2 { font-size: clamp(26px, 3.4vw, 34px); line-height: 1.05; }
+h3 { font-size: 20px; line-height: 1.2; }
+p { margin: 0; max-width: 68ch; }
+.eyebrow { font-family: var(--display); font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; font-size: 13px; color: var(--muted); }
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+/* masthead */
+.mast { padding-block: 40px 20px; border-bottom: 1px solid var(--grid-strong); display: grid; gap: 14px; }
+.mast .dek { font-size: 19px; color: var(--ink-2); max-width: 62ch; }
+.mast .stamp { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 14px; color: var(--muted); }
+.mast .stamp b { color: var(--ink); font-weight: 600; }
+
+/* thesis */
+.thesis { padding-block: 28px 8px; display: grid; gap: 18px; }
+.thesis .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 22px 32px; }
+.thesis .grid > div { min-width: 0; display: grid; gap: 6px; align-content: start; }
+.thesis .grid h3 { font-size: 22px; }
+.thesis .grid p { font-size: 15.5px; color: var(--ink-2); }
+
+/* sections */
+section.block { padding-block: 34px 8px; display: grid; gap: 14px; }
+.sechead { display: grid; gap: 4px; }
+.sechead p { color: var(--ink-2); font-size: 15.5px; }
+
+/* wave panel */
+.panel { position: relative; background: var(--surface); border: 1px solid var(--grid); border-radius: 6px; padding: 10px 6px 6px; }
+.panel svg { display: block; width: 100%; height: auto; }
+.panel text { font-family: var(--body); fill: var(--ink); }
+.panel .zl { font-family: var(--display); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; fill: var(--muted); }
+.panel .hit { cursor: pointer; }
+.panel .hit:focus { outline: none; }
+.panel .hit:focus-visible { stroke: var(--ink); stroke-width: 2; }
+.panel .tip {
+  position: absolute; z-index: 5; width: 268px; max-width: calc(100% - 12px); pointer-events: none;
+  background: var(--surface); color: var(--ink); border: 1px solid var(--grid-strong); border-radius: 5px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.12); padding: 10px 12px; font-size: 13.5px; line-height: 1.35; display: grid; gap: 5px;
+}
+.panel .tip svg.glyph { width: 14px; height: 14px; display: inline-block; flex: none; }
+.panel .tip b { font-size: 15px; }
+.panel .tip .z { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-2); }
+.panel .tip .r { font-family: var(--mono); font-size: 12.5px; color: var(--ink); }
+.panel .tip .n { color: var(--ink-2); }
+.panel .tip .a { color: var(--muted); font-size: 12px; }
+
+/* legend */
+.legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.legend .z { display: grid; grid-template-columns: 22px 1fr; gap: 2px 8px; align-items: center; padding: 10px 10px; border-top: 2px solid var(--grid-strong); min-width: 0; }
+.legend .z.trough { border-top-color: var(--cold); }
+.legend .z.peak { border-top-color: var(--hot); }
+.legend .z .name { font-family: var(--display); font-weight: 600; font-size: 17px; line-height: 1.1; }
+.legend .z .count { font-family: var(--mono); font-size: 13px; color: var(--muted); grid-column: 2; }
+.legend .z .blurb { grid-column: 1 / -1; font-size: 13px; color: var(--ink-2); line-height: 1.3; }
+.glyph { width: 16px; height: 16px; display: inline-block; vertical-align: -3px; }
+
+/* signals */
+.signals { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.signals .col { background: var(--surface); border: 1px solid var(--grid); border-radius: 6px; padding: 14px 16px 16px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.signals .col h3 { display: flex; align-items: center; gap: 8px; }
+.signals .col p { font-size: 14px; color: var(--ink-2); }
+.signals ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.signals li { display: flex; justify-content: space-between; gap: 10px; font-size: 15px; border-top: 1px solid var(--grid); padding-top: 4px; }
+.signals li span { color: var(--muted); font-size: 13px; white-space: nowrap; }
+
+/* tables */
+.tablewrap { overflow-x: auto; border: 1px solid var(--grid); border-radius: 6px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 860px; font-size: 14px; }
+th, td { text-align: left; vertical-align: top; padding: 9px 10px; border-top: 1px solid var(--grid); }
+th { font-family: var(--display); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; font-size: 12.5px; color: var(--muted); border-top: 0; white-space: nowrap; }
+td.name { font-weight: 600; white-space: nowrap; }
+td.latest { font-family: var(--mono); font-size: 12.5px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+td.asof { color: var(--muted); white-space: nowrap; font-size: 13px; }
+td.phase { white-space: nowrap; }
+td.phase .pill { display: inline-flex; align-items: center; gap: 6px; }
+td.ref, td.note { color: var(--ink-2); min-width: 180px; }
+
+/* callouts */
+.callout { background: var(--callout); border-left: 3px solid var(--cold); padding: 14px 18px; display: grid; gap: 6px; border-radius: 0 6px 6px 0; }
+.callout p { font-size: 15px; color: var(--ink-2); max-width: 80ch; }
+.method { display: grid; gap: 14px; padding-block: 36px 0; border-top: 1px solid var(--grid-strong); margin-top: 30px; }
+.method p { font-size: 15px; color: var(--ink-2); max-width: 80ch; }
+.sources { columns: 2; column-gap: 32px; font-size: 13.5px; color: var(--ink-2); }
+.sources ul { margin: 0; padding-left: 18px; }
+.sources li { break-inside: avoid; margin-bottom: 4px; }
+@media (max-width: 640px) { .sources { columns: 1; } }
+
+/* site chrome */
+.home { padding-top: 22px; font-size: 14px; }
+.home a { color: var(--muted); text-decoration: none; }
+.home a:hover { text-decoration: underline; }
+[hidden]:not([hidden=until-found i]) { display: none !important; }
+img { max-width: 100%; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="home"><a href="/">shabeelkandi.com</a></nav>
+  <header class="mast">
+    <div class="eyebrow">Cycle positions · as of 31 October 2026</div>
+    <h1>Industry Cycle Map</h1>
+    <p class="dek">Fifty-nine cyclical gauges, from Brent crude to office vacancy, placed on one boom-bust wave by where each price sits against its own multi-year range and which way it is moving.</p>
+    <div class="stamp">
+      <div>Brent <b class="mono">$113</b></div>
+      <div>Copper <b class="mono">$14,415/t</b></div>
+      <div>Gold <b class="mono">$3,884</b></div>
+      <div>Fed funds <b class="mono">3.75–4.00%</b></div>
+      <div>30-yr mortgage <b class="mono">7.4%</b></div>
+      <div>US CPI <b class="mono">3.7%</b></div>
+    </div>
+  </header>
+
+  <section class="thesis">
+    <div class="grid">
+      <div>
+        <h3>An energy-shock cycle</h3>
+        <p>The Iran war that began on 28 February 2026 and the fight over the Strait of Hormuz pushed Brent to $126 in April. It is back above $110. Twenty-one of the 59 gauges sit in the peak zone, most of them downstream of energy: diesel cracks, European gas, coal, fertiliser, tankers, trucking rates.</p>
+      </div>
+      <div>
+        <h3>Money is tightening again</h3>
+        <p>US inflation re-accelerated to 3.7% with energy up 20% on the year. The Fed hiked in September, held at 3.75–4.00% on 28 October with a December hike mostly priced, and the 30-year mortgage is 7.4%. So the bottoms cluster in rate-sensitive assets: homebuilders, housing turnover, office, and the precious metals that ran on rate-cut hopes.</p>
+      </div>
+      <div>
+        <h3>The real troughs are oversupply</h3>
+        <p>Lithium, nickel, petrochemicals, LNG carriers, rough diamonds and polysilicon are cheap because too much capacity was built, not because rates are high. They turn when capacity leaves, and some of that has begun: China's anti-involution cuts in solar, cracker closures in Europe and Japan, record LNG-ship scrapping.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="master">
+    <div class="sechead">
+      <h2>Every gauge on one wave</h2>
+      <p>Hover or tap a dot for the reading. Left of the trough is still falling; right of it is recovering. The bands behind the wave mark the two zones that matter most to a buyer: bottoming and peak.</p>
+    </div>
+    <div class="panel" id="masterPanel"></div>
+    <div class="legend" id="legend"></div>
+  </section>
+
+  <section class="block" id="signals">
+    <div class="sechead">
+      <h2>What the map says</h2>
+    </div>
+    <div class="signals" id="signalCols"></div>
+    <div class="callout">
+      <h3>A trough is a zone, not a date</h3>
+      <p>Petrochemicals have sat at the bottom since 2023 and lithium since 2024. Bottoming means most of the downside is spent; it does not say when the upturn starts. The strongest signal of a turn is supply leaving (mine closures, ship scrapping, cracker shutdowns), not the price alone. This page positions industries against their own history. It is not advice to buy or sell anything.</p>
+    </div>
+  </section>
+
+  <div id="sectors"></div>
+
+  <section class="method">
+    <div class="sechead">
+      <h2>How the positions were set</h2>
+    </div>
+    <p>Each gauge gets a phase from 0° to 360°. 270° is the trough: price near the low of its multi-year range with supply still being cut. 90° is the peak: price near the high of its range with supply responding. Placement weighs three things: where the latest reading sits in its five-to-ten-year range, the direction over the past three to six months, and whether capacity is being added or withdrawn. The six zones are 60° wide. Solid dots are in the bottoming or peak zone; hollow dots are in the zone beside one; grey dots are mid-slope.</p>
+    <p>Readings are the latest available from exchanges, trade press and official releases. The "as of" column marks the ones that are a few weeks old; several came from secondary sources and should be checked against a live quote before any decision rests on them. Phase positions are judgment calls, and an industry one zone to either side of where it is drawn would not be a surprise.</p>
+    <div class="sources">
+      <ul>
+        <li>Energy: Trading Economics (crude, coal), USAGold and Capital Street FX daily reports (30 and 24 Oct), GlobalLNGHub gas weekly (19 Oct), RBN Energy and Crux Investor (diesel cracks), Baker Hughes via SteelOrbis and RBN (rig count, 23 Oct), Westwood and Octus (offshore dayrates), Spark Commodities via ShipUniverse (LNG freight, 6 Oct), TaiyangNews PV price index (CW41), Cameco and Farmonaut (uranium), GE Vernova backlog via TheNextWeb and Primary VC.</li>
+        <li>Metals: Westmetall LME settlements (23 Oct), Mining.com and Farmonaut (copper record), Benchmark Mineral Intelligence index briefings (23 Oct), Shanghai Metals Market (cobalt, lithium, tin), Reuters via Mining Weekly (iron ore, 15 Oct), Kallanish and GMK Center (US HRC, 23–27 Oct), CBS News and Money Metals (gold and silver records), Fortune (platinum, 16 Sep), De Beers H1 2026 results via GJEPC and Rapaport.</li>
+        <li>Agriculture: UkrAgroConsult CBOT closes (26 Oct), USDA October WASDE via University of Arkansas, Trading Economics and Barchart (cocoa, coffee, sugar), Pro Farmer and Farm Progress (cattle, hogs), DTN and USDA AMS via Fertilizer Daily (urea, potash), Madison's and CME (lumber), BC government weekly forest product prices (pulp, 9 Oct).</li>
+        <li>Shipping and transport: Drewry World Container Index via Cyprus Shipping News (22 Oct), Trading Economics (Baltic Dry Index, 22 Oct), ThePricer and Infomarine (VLCC), BIMCO via Maritime Executive and Heisenberg Shipping (orderbook, newbuild prices), Truckstop/FTR via AJOT and C.H. Robinson October update (trucking), S&P Global Market Intelligence airline preview (8 Oct), Forecast International and AeroCorner (aircraft backlogs), Cox Automotive and J.D. Power October forecasts.</li>
+        <li>Industrials and technology: TrendForce via iConnect007 and ifeng (DRAM and NAND), VanEck, Natixis and FN News (semiconductor cycle), Chemical Week, S&P Global Ratings and Deloitte (petrochemicals), J.P. Morgan global PMI via Australian Manufacturing, CBRE Q3 2026 hotel figures and IHG Q3, Fitch, CIAB and J.P. Morgan (insurance pricing).</li>
+        <li>Real estate: Freddie Mac PMMS via Trading Economics and SolarReviews, NAR and TrendForce (existing-home sales and prices), NAHB via Trading Economics (builder index, Oct), CBRE Q3 2026 office report, Moody's Q1 2026 office vacancy via Bisnow, CRE Daily (industrial forecast), China NBS 70-city data via Morningstar/Dow Jones (19 Oct).</li>
+        <li>Money and markets: InvestingLive and Admiral Markets (FOMC 28 Oct), BLS via Trading Economics (CPI, 14 Oct), Guggenheim Q4 high-yield note (spreads at 30 Sep), AP via CryptoDaily and KuCoin (S&P 500 records), Renaissance Capital fall preview (IPOs).</li>
+      </ul>
+    </div>
+  </section>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var ZONES = [
+    { id: 'late', name: 'Late decline', lines: ['Late', 'decline'], from: 180, to: 240, hue: 'neutral', solid: false,
+      blurb: 'Still falling toward the trough. Capitulation, inventory liquidation, capex being cut.' },
+    { id: 'trough', name: 'Bottoming', lines: ['Bottoming'], from: 240, to: 300, hue: 'cold', solid: true,
+      blurb: 'Price near multi-year lows. Supply is being withdrawn; sentiment is worst here.' },
+    { id: 'recovery', name: 'Early recovery', lines: ['Early', 'recovery'], from: 300, to: 360, hue: 'cold', solid: false,
+      blurb: 'Off the lows, not yet believed. Demand improving faster than supply returns.' },
+    { id: 'expansion', name: 'Expansion', lines: ['Expansion'], from: 0, to: 60, hue: 'neutral', solid: true,
+      blurb: 'Mid-range prices, rising. Margins healthy, capacity additions announced.' },
+    { id: 'peak', name: 'Peak / late cycle', lines: ['Peak'], from: 60, to: 120, hue: 'hot', solid: true,
+      blurb: 'Price near the top of its range. Supply responding, substitution starting.' },
+    { id: 'early', name: 'Early decline', lines: ['Early', 'decline'], from: 120, to: 180, hue: 'hot', solid: false,
+      blurb: 'Rolled over from the high. New capacity arriving into softening demand.' }
+  ];
+
+  var SECTORS = [
+    { id: 'energy', name: 'Energy & power', lead: 'The shock itself. Oil, European gas, coal and refining margins are at the top; US gas, LNG shipping and solar polysilicon are at the bottom because they were oversupplied before the war started.' },
+    { id: 'metals', name: 'Metals & mining', lead: 'Split cleanly in two. Industrial metals with supply problems (copper, tin, zinc) and tariff-protected US steel sit at the peak; battery metals, iron ore and diamonds sit at the bottom. Gold and silver are unwinding a January blow-off.' },
+    { id: 'ags', name: 'Agriculture & softs', lead: 'Grains are the quiet early-recovery story: corn, wheat and soybeans are off their 2025 lows with the first higher farm prices since 2022. Cattle and fertiliser are at the top; lumber and pulp wait on housing.' },
+    { id: 'shipping', name: 'Shipping & transport', lead: 'Tankers and shipyards are enjoying a classic late-cycle boom from Hormuz rerouting. LNG carriers are the opposite, with rates down 91% since March. Trucking is recovering, inflated by $6 diesel.' },
+    { id: 'industry', name: 'Industrials & technology', lead: 'The AI memory supercycle is still rising but decelerating from +90% to +10–15% per quarter. Petrochemicals are the deepest trough on the page.' },
+    { id: 'realestate', name: 'Real estate & construction', lead: 'Everything here needs cheaper money, and money got dearer. Builder sentiment is at a 2012 low; office is bottoming with prime space already recovering; China is in year four of falling prices.' },
+    { id: 'money', name: 'Money & markets', lead: 'A second tightening cycle inside four years. Equities and IPOs are at records, credit spreads are tight but widening. This is the late-cycle configuration that eventually resets everything above.' }
+  ];
+
+  var ITEMS = [
+    // Energy & power
+    { s: 'energy', name: 'Crude oil (Brent)', phase: 100, gauge: 'Brent front-month', latest: '$113/bbl', asof: '30 Oct', ref: '2026 high $126 (Apr); late-2025 low ≈ $60', note: 'Hormuz war premium is back. OPEC+ spare capacity thin.' },
+    { s: 'energy', name: 'US natural gas (Henry Hub)', phase: 250, gauge: 'Henry Hub front-month', latest: '$3.1/MMBtu', asof: '16 Oct', ref: '2022 peak $9.70; 2024 low $1.60', note: 'Decoupled from the oil shock; LNG export pull is the swing factor.' },
+    { s: 'energy', name: 'European gas (TTF)', phase: 80, gauge: 'TTF front-month', latest: '$29/MMBtu', asof: '16 Oct', ref: '2022 peak ≈ $90; 2025 average ≈ $12', note: 'Qatari LNG routes through Hormuz. Europe is paying up for winter.' },
+    { s: 'energy', name: 'Thermal coal (Newcastle)', phase: 75, gauge: 'Newcastle 6,000 kcal', latest: '$140–144/t', asof: 'Oct', ref: '2022 peak $450; 2025 low ≈ $95', note: 'Gas-to-coal switching lifts it; still far below 2022.' },
+    { s: 'energy', name: 'Uranium', phase: 30, gauge: 'U3O8 spot / term', latest: '$90 spot · $96.50 term/lb', asof: '15 Oct', ref: '2024 peak $106; 2016 low $18', note: 'Slow structural upcycle. Term price above spot, utilities contracting.' },
+    { s: 'energy', name: 'Refining margins', phase: 95, gauge: 'US 3-2-1 crack · USGC diesel crack', latest: '$65/bbl · $108/bbl', asof: '5 Oct', ref: 'Normal ≈ $20–30/bbl', note: 'Record distillate margins on a 13% stock draw. Peaks like this do not last.' },
+    { s: 'energy', name: 'Oilfield services (US onshore)', phase: 340, gauge: 'Baker Hughes US rig count', latest: '603 rigs, +55 y/y', asof: '23 Oct', ref: '2022 peak ≈ 780; 2025 low ≈ 540', note: 'Producers are responding to $100 oil, slowly. Highest since 2024.' },
+    { s: 'energy', name: 'Offshore drilling', phase: 40, gauge: 'Drillship dayrate · utilisation', latest: '≈ $416k/day · 94%', asof: '2026 avg', ref: '2013 peak $600k+; 2017 trough ≈ $150k', note: 'Rate recovery stalled in 2025; $100 oil reopens it for 2027 campaigns.' },
+    { s: 'energy', name: 'Power equipment', phase: 85, gauge: 'GE Vernova turbine backlog · transformer lead time', latest: '116 GW · 128 weeks', asof: 'Q2', ref: 'Backlog 83 GW at end-2025', note: 'Data-centre build-out. Order slots sold out to 2031.' },
+    { s: 'energy', name: 'Solar (polysilicon)', phase: 290, gauge: 'China polysilicon · module price', latest: '+20% m/m from $8/kg floor · $0.085/W', asof: 'CW41', ref: '2022 peak $40/kg', note: 'China’s anti-involution output cuts are lifting it off the floor.' },
+
+    // Metals & mining
+    { s: 'metals', name: 'Copper', phase: 95, gauge: 'LME cash', latest: '$14,415/t', asof: '23 Oct', ref: 'Record $14,822 (12 Oct); 2020 low $4,600', note: 'Mine disruptions plus grid and AI demand. 9% one-day drops show how crowded it is.' },
+    { s: 'metals', name: 'Aluminium', phase: 125, gauge: 'LME cash', latest: '$3,043/t', asof: '23 Oct', ref: '2022 peak $4,000; 2025 average ≈ $2,600', note: 'War premium fading. China’s smelting cap still binds.' },
+    { s: 'metals', name: 'Zinc', phase: 85, gauge: 'LME cash', latest: '$3,790/t', asof: '23 Oct', ref: '2022 peak $4,500; 2024 low $2,300', note: 'Steep backwardation says spot shortage. Smelter restarts are the risk.' },
+    { s: 'metals', name: 'Nickel', phase: 265, gauge: 'LME cash', latest: '$15,695/t', asof: '23 Oct', ref: '2022 squeeze $48,000; 2025 low ≈ $14,500', note: 'Indonesian oversupply. Price sits on the cost curve.' },
+    { s: 'metals', name: 'Tin', phase: 90, gauge: 'LME cash', latest: '$50,855/t', asof: '23 Oct', ref: '2022 peak $51,000', note: 'Myanmar and DRC supply trouble, AI solder demand. At the old high.' },
+    { s: 'metals', name: 'Iron ore', phase: 230, gauge: 'SGX 62% Fe', latest: '$89.85/t', asof: '15 Oct', ref: '2021 peak $230; 2015 low $38', note: 'Two-year low. Simandou ramp meets weak Chinese steel demand.' },
+    { s: 'metals', name: 'Steel (US HRC)', phase: 80, gauge: 'US hot-rolled coil', latest: '$1,280–1,320/short ton', asof: '23 Oct', ref: '2021 peak $1,950; Oct 2025 $825–865', note: '50% tariffs plus a spot shortage. Global steel is in a slump.' },
+    { s: 'metals', name: 'Lithium', phase: 262, gauge: 'China battery-grade carbonate', latest: '¥59–62k/t (≈ $8.5/kg)', asof: '11 Oct', ref: '2022 peak ¥600k/t', note: 'Down 90% from the peak. Chinese supply cuts not yet enough.' },
+    { s: 'metals', name: 'Cobalt', phase: 55, gauge: 'Cobalt hydroxide', latest: '$11–12/lb', asof: '11 Oct', ref: '2022 peak $40/lb; 2025 low $6/lb', note: 'DRC export quotas doubled it. Policy-driven, not demand-driven.' },
+    { s: 'metals', name: 'Gold', phase: 150, gauge: 'Spot', latest: '$3,884/oz', asof: '30 Oct', ref: 'Record $5,589 (29 Jan 2026)', note: 'Down 30% from the peak as the Fed hikes. Lowest since Oct 2025.' },
+    { s: 'metals', name: 'Silver', phase: 165, gauge: 'Spot', latest: '$49/oz', asof: '30 Oct', ref: 'Record $121.67 (29 Jan 2026)', note: 'Down 60% from the peak. The speculative blow-off has unwound.' },
+    { s: 'metals', name: 'Platinum', phase: 70, gauge: 'Spot', latest: '$1,755/oz', asof: '16 Sep', ref: '2025 low $900; 2008 peak $2,250', note: 'Supply deficit story intact. Held up far better than gold.' },
+    { s: 'metals', name: 'Diamonds (rough)', phase: 268, gauge: 'De Beers realised price', latest: '$105/ct, −32% y/y', asof: 'H1 2026', ref: '2022 peak ≈ $200/ct', note: 'Lab-grown broke the cycle. Deepest list-price cuts on record.' },
+
+    // Agriculture & softs
+    { s: 'ags', name: 'Corn', phase: 320, gauge: 'CBOT Dec · USDA farm price', latest: '$4.55/bu · $4.70', asof: '26 Oct', ref: '2022 peak $8.20; 2025 low $3.85', note: 'Highest farm price since 2022, but a record crop caps the upside.' },
+    { s: 'ags', name: 'Wheat', phase: 310, gauge: 'CBOT Dec SRW', latest: '$6.16/bu', asof: '26 Oct', ref: '2022 peak $13; 2025 low $5', note: 'Off the lows. Large global stocks.' },
+    { s: 'ags', name: 'Soybeans', phase: 345, gauge: 'CBOT Jan', latest: '$12.50/bu', asof: '26 Oct', ref: '2022 peak $17.80; 2025 low $9.60', note: 'China buying again; US exports +42% y/y.' },
+    { s: 'ags', name: 'Cocoa', phase: 20, gauge: 'ICE NY', latest: '≈ $5,600/t', asof: '23 Oct', ref: 'Dec 2024 peak $12,900; Mar 2026 low $2,846', note: 'Post-bubble whipsaw. 2026/27 West African crop in question.' },
+    { s: 'ags', name: 'Coffee (arabica)', phase: 300, gauge: 'ICE NY', latest: '$2.95/lb', asof: '7 Oct', ref: '2025 peak $4.40; Jun 2026 low $2.50', note: 'Brazil’s big 2026/27 crop capped it. Dryness is now the risk.' },
+    { s: 'ags', name: 'Sugar', phase: 305, gauge: 'ICE No. 11', latest: '≈ 18¢/lb', asof: '23 Sep', ref: '2023 peak 28¢; Apr 2026 low 14.4¢', note: 'ISO sees 2026/27 flipping to a small deficit.' },
+    { s: 'ags', name: 'Cattle', phase: 85, gauge: 'CME live cattle · cash', latest: '$214–218/cwt', asof: 'Sep', ref: 'Record highs 2025–26; 2020 low $90', note: 'US herd at a 70-year low. Rebuilding takes years.' },
+    { s: 'ags', name: 'Hogs', phase: 140, gauge: 'CME lean hogs', latest: '≈ $83/cwt', asof: 'Sep', ref: '2025 peak ≈ $110', note: '“The price peak is behind us.” Ample supply into 2027.' },
+    { s: 'ags', name: 'Fertiliser (urea)', phase: 85, gauge: 'US distributor urea · retail potash', latest: '$796/st · $502/st', asof: '9 Oct', ref: '2022 peak $1,000+; 2024 low $400', note: 'Gas-price driven. Potash is recovering more gently.' },
+    { s: 'ags', name: 'Lumber', phase: 250, gauge: 'CME futures · W-SPF cash', latest: '$546 · $464/mbf', asof: '13 Oct', ref: '2021 peak $1,700; 2023 low $350', note: 'Hostage to housing. Tariffs on Canadian supply.' },
+    { s: 'ags', name: 'Pulp (NBSK)', phase: 238, gauge: 'NBSK delivered China', latest: '$638/t', asof: '9 Oct', ref: '2022 peak $1,000; 2025 average $772', note: 'Weak paper demand, ample inventories.' },
+
+    // Shipping & transport
+    { s: 'shipping', name: 'Crude tankers (VLCC)', phase: 95, gauge: 'VLCC spot earnings', latest: '≈ $85k/day', asof: 'Oct', ref: '2020 peak $250k; 2024 average ≈ $40k', note: 'Hormuz rerouting plus sanctions. Record second-hand asset prices.' },
+    { s: 'shipping', name: 'Container shipping', phase: 45, gauge: 'Drewry WCI composite', latest: '$4,585/40ft', asof: '22 Oct', ref: '2021 peak $10,400; 2023 low $1,400', note: 'Disruption-driven and rising for two weeks. Orderbook ≈ 30% of fleet is the overhang.' },
+    { s: 'shipping', name: 'Dry bulk', phase: 50, gauge: 'Baltic Dry Index · Capesize', latest: '2,693 · 4,148', asof: '22 Oct', ref: '2021 peak 5,650; 2023 low 530', note: 'Simandou ton-miles help. Panamax lagging.' },
+    { s: 'shipping', name: 'LNG shipping', phase: 262, gauge: 'Atlantic 174k m³ spot', latest: '$25,750/day', asof: '6 Oct', ref: 'Mar 2026 war spike $287,500; 2022 peak $400k+', note: 'Fleet surplus; rates down 91% since March. Record scrapping year.' },
+    { s: 'shipping', name: 'Shipbuilding', phase: 90, gauge: 'Global orderbook · newbuild price index', latest: '194m CGT · 185', asof: 'Jun', ref: 'Orderbook highest in 17 years; prices +33% vs 2021', note: 'Slots sold into 2029. A textbook late-cycle order book.' },
+    { s: 'shipping', name: 'Trucking (US)', phase: 335, gauge: 'Truckstop spot rate incl. fuel', latest: '$3.24/mi, +41% y/y', asof: '23 Oct', ref: '2022 peak ≈ $3.80 incl. fuel', note: 'Fuel at $6.30/gal inflates it; linehaul is still below 2022.' },
+    { s: 'shipping', name: 'Airlines', phase: 130, gauge: 'Jet fuel · demand', latest: '$152/bbl, +70% y/y', asof: 'Q3', ref: '2024–25 record traffic', note: 'Demand resilient; the fuel shock is eating margins. Capacity being cut.' },
+    { s: 'shipping', name: 'Aircraft manufacturing', phase: 55, gauge: 'Airbus · Boeing backlog', latest: '9,216 · 6,814 aircraft', asof: 'H1', ref: 'More than 10 years of output', note: 'Supply-bound, not demand-bound. Engine shortages set the pace.' },
+    { s: 'shipping', name: 'Autos (US)', phase: 15, gauge: 'Light-vehicle SAAR', latest: '≈ 16.1m', asof: 'Oct est.', ref: '2016 peak 17.5m; 2020 low 8.6m', note: 'Flat. Tariffs and 7% auto loans cap the upside.' },
+
+    // Industrials & technology
+    { s: 'industry', name: 'Memory chips (DRAM, NAND)', phase: 100, gauge: 'TrendForce contract price, q/q', latest: 'Q4 +10–15% (Q1 was +90%)', asof: '30 Sep', ref: '2023 trough', note: 'Supercycle decelerating. “Peak memory” calls multiplying.' },
+    { s: 'industry', name: 'Semiconductors (AI capex)', phase: 85, gauge: 'Hyperscaler capex · WSTS growth', latest: '≈ $330bn · 2026 +90%, 2027 +27%', asof: '2026', ref: '2019 trough', note: 'Still growing, but the second derivative has turned.' },
+    { s: 'industry', name: 'Petrochemicals', phase: 262, gauge: 'Cracker margins', latest: 'Below mid-cycle', asof: 'Q3', ref: '2021 peak; no recovery expected before 2027–28', note: 'Chinese overcapacity. Closures under way in Europe and Japan.' },
+    { s: 'industry', name: 'Global manufacturing', phase: 55, gauge: 'J.P. Morgan global PMI', latest: '53.0', asof: 'Sep', ref: '50 = neutral; highest since Feb 2022', note: 'Expansion, but price-pressure driven.' },
+    { s: 'industry', name: 'Hotels (US)', phase: 70, gauge: 'Occupancy · RevPAR', latest: '67.7% · +6–7% y/y', asof: 'Q3', ref: '2019 occupancy peak 66%', note: 'Demand growth 3% against 0.4% supply. Late-cycle plateau.' },
+    { s: 'industry', name: 'P&C insurance', phase: 150, gauge: 'Commercial premium change · cat reinsurance', latest: '−2% · −10 to −12%', asof: 'Q2 / mid-year', ref: '2023 hard-market peak', note: 'Soft market deepening. Casualty is the exception.' },
+
+    // Real estate & construction
+    { s: 'realestate', name: 'US housing (existing)', phase: 215, gauge: '30-yr mortgage · sales · median price', latest: '7.4% · −2.2% y/y · $434k', asof: 'Oct / Sep', ref: 'Median record $440.6k; rates highest since Nov 2023', note: 'A third of metros now falling. Turnover frozen.' },
+    { s: 'realestate', name: 'Homebuilders', phase: 258, gauge: 'NAHB index · starts', latest: '29 · 1.28m', asof: 'Oct / Aug', ref: '2021 peak 90; lowest since 2012', note: '43% of builders cutting prices. Sentiment at the trough.' },
+    { s: 'realestate', name: 'Office', phase: 275, gauge: 'Moody’s vacancy · CBRE prime vacancy', latest: '21% · 11.9%', asof: 'Q1 / Q3', ref: 'Record overall vacancy; ten quarters of positive absorption', note: 'Bifurcated: prime recovering, commodity office still distressed.' },
+    { s: 'realestate', name: 'Industrial / logistics', phase: 232, gauge: 'National vacancy', latest: 'Heading to 8.6%', asof: '2026 f/c', ref: '2022 low ≈ 3%', note: '200m sf delivering against 68m sf absorption.' },
+    { s: 'realestate', name: 'China property', phase: 236, gauge: '70-city new-home prices', latest: '−2.8% y/y', asof: 'Sep', ref: '2021 peak; fourth year of declines', note: 'Declines narrowing but no floor yet.' },
+
+    // Money & markets
+    { s: 'money', name: 'Interest rates (Fed)', phase: 75, gauge: 'Fed funds · 10-yr Treasury', latest: '3.75–4.00% · ≈ 5.3%', asof: '28 Oct', ref: 'Hiked Sep; Dec hike ≈ 80% priced', note: 'Second tightening cycle in four years.' },
+    { s: 'money', name: 'Inflation (US CPI)', phase: 50, gauge: 'Headline y/y · energy y/y', latest: '3.7% · +20.4%', asof: 'Sep', ref: '2022 peak 9.1%', note: 'Re-accelerating on energy; core still near 2.5%.' },
+    { s: 'money', name: 'Credit (high yield)', phase: 118, gauge: 'ICE BofA HY spread', latest: '312 bp', asof: '30 Sep', ref: 'From 275 bp; 2007 low 240; 2020 peak 1,100', note: 'Still tight by history, widening from 20-year lows.' },
+    { s: 'money', name: 'Equities (S&P 500)', phase: 95, gauge: 'Index level', latest: '≈ 7,800 record', asof: '7 Oct', ref: 'VIX at a 2026 low', note: 'Record highs with a 5.3% ten-year yield. Midterm-year seasonality.' },
+    { s: 'money', name: 'IPO market', phase: 85, gauge: 'Deal pace', latest: 'Record Q3 pace', asof: 'Q3', ref: 'Anthropic, OpenAI, Jio, SpaceX in the pipeline', note: 'Hot IPO windows close fast when rates rise.' }
+  ];
+
+  function zoneOf(ph) {
+    var p = ((ph % 360) + 360) % 360;
+    for (var i = 0; i < ZONES.length; i++) { if (p >= ZONES[i].from && p < ZONES[i].to) return ZONES[i]; }
+    return ZONES[3];
+  }
+  function phaseToT(ph) { return (((ph - 180) % 360) + 360) % 360 / 360; }
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+
+  ITEMS.forEach(function (it, i) { it.i = i; it.zone = zoneOf(it.phase); });
+
+  var BODY_FONT = '12px "Source Sans 3", "Segoe UI", system-ui, sans-serif';
+  var meas = document.createElement('canvas').getContext('2d');
+
+  function glyphSVG(zone, size) {
+    size = size || 16;
+    var c = size / 2, color = 'var(--' + zone.hue + ')';
+    var inner = zone.solid
+      ? '<circle cx="' + c + '" cy="' + c + '" r="' + (c - 2) + '" fill="' + color + '"/>'
+      : '<circle cx="' + c + '" cy="' + c + '" r="' + (c - 2.6) + '" fill="none" stroke="' + color + '" stroke-width="2.2"/>';
+    return '<svg class="glyph" width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '" aria-hidden="true">' + inner + '</svg>';
+  }
+
+  function freeLane(lanes, iv) {
+    for (var i = 0; ; i++) {
+      if (!lanes[i]) return i;
+      var ok = true;
+      for (var k = 0; k < lanes[i].length; k++) { var o = lanes[i][k]; if (iv[0] < o[1] && iv[1] > o[0]) { ok = false; break; } }
+      if (ok) return i;
+    }
+  }
+
+  function renderWave(panel, items, opts) {
+    var W = Math.max(340, Math.floor(panel.clientWidth) - 12);
+    var narrow = W < 560;
+    var padX = 14, padTop = 8, padBottom = 6, laneH = 17, gap = 12;
+    var plotW = W - 2 * padX;
+    var A = opts.master ? clamp(plotW * 0.14, 48, 92) : clamp(plotW * 0.105, 38, 62);
+    var dotR = opts.master ? 4.2 : 5.5;
+    meas.font = BODY_FONT;
+
+    var placed = items.map(function (it) {
+      var t = phaseToT(it.phase);
+      return { it: it, t: t, x: padX + t * plotW, s: Math.sin(it.phase * Math.PI / 180) };
+    }).sort(function (a, b) { return a.x - b.x; });
+
+    var lanes = { top: [], bottom: [] };
+    if (opts.labels) {
+      placed.forEach(function (p) {
+        var w = meas.measureText(p.it.name).width + 4;
+        var lx = clamp(p.x, padX + w / 2, W - padX - w / 2);
+        var iv = [lx - w / 2 - 7, lx + w / 2 + 7];
+        var nat = p.s >= 0 ? 'top' : 'bottom', oth = nat === 'top' ? 'bottom' : 'top';
+        var ln = freeLane(lanes[nat], iv), lo = freeLane(lanes[oth], iv);
+        var side = ln > lo + 1 ? oth : nat;
+        var lane = side === nat ? ln : lo;
+        (lanes[side][lane] = lanes[side][lane] || []).push(iv);
+        p.side = side; p.lane = lane; p.lx = lx; p.w = w;
+      });
+    } else {
+      // master: spread dots that share a phase along the curve normal
+      var groups = {};
+      placed.forEach(function (p) { var k = Math.round(p.t * 90); (groups[k] = groups[k] || []).push(p); });
+      Object.keys(groups).forEach(function (k) {
+        var g = groups[k], n = g.length;
+        g.forEach(function (p, j) { p.off = (j - (n - 1) / 2) * (dotR * 2 + 1.5); });
+      });
+    }
+
+    var nT = lanes.top.length, nB = lanes.bottom.length;
+    var y0 = padTop + (nT ? nT * laneH + gap : 0);
+    var midY = y0 + A, yB = midY + A;
+    var zoneY = yB + (nB ? gap + nB * laneH : 0) + 24;
+    var H = zoneY + 8 + padBottom + (narrow ? 10 : 0);
+    var bandBottom = zoneY - 8;
+
+    var out = [];
+    out.push('<svg viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="' + esc(opts.label) + '">');
+
+    // zone bands and separators
+    ZONES.forEach(function (z, k) {
+      var x = padX + plotW * k / 6, bw = plotW / 6;
+      var fill = z.id === 'trough' ? 'var(--cold-wash)' : z.id === 'peak' ? 'var(--hot-wash)' : (k % 2 ? 'var(--band)' : 'none');
+      if (fill !== 'none') out.push('<rect x="' + x + '" y="' + padTop + '" width="' + bw + '" height="' + (bandBottom - padTop) + '" fill="' + fill + '"/>');
+      if (k > 0) out.push('<line x1="' + x + '" y1="' + padTop + '" x2="' + x + '" y2="' + bandBottom + '" stroke="var(--grid)" stroke-width="1"/>');
+      var lines = narrow ? z.lines : [z.name], cx = x + bw / 2;
+      out.push('<text class="zl" x="' + cx + '" y="' + (zoneY + 2) + '" text-anchor="middle" font-size="' + (narrow ? 9 : 10.5) + '"' + (narrow ? ' style="letter-spacing:0.04em"' : '') + '>' +
+        lines.map(function (l, li) { return '<tspan x="' + cx + '"' + (li ? ' dy="10"' : '') + '>' + esc(l) + '</tspan>'; }).join('') + '</text>');
+    });
+    // midline
+    out.push('<line x1="' + padX + '" y1="' + midY + '" x2="' + (W - padX) + '" y2="' + midY + '" stroke="var(--grid)" stroke-width="1"/>');
+    // wave
+    var d = '';
+    for (var i = 0; i <= 160; i++) {
+      var t = i / 160, ph = 180 + 360 * t;
+      var x = padX + t * plotW, y = midY - A * Math.sin(ph * Math.PI / 180);
+      d += (i ? 'L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1);
+    }
+    out.push('<path d="' + d + '" fill="none" stroke="var(--ink-2)" stroke-width="1.4" opacity="0.6"/>');
+    // trough / peak markers
+    out.push('<text class="zl" x="' + (padX + plotW * 0.25) + '" y="' + (yB - 11) + '" text-anchor="middle" font-size="9" opacity="0.9">trough</text>');
+    out.push('<text class="zl" x="' + (padX + plotW * 0.75) + '" y="' + (y0 + 18) + '" text-anchor="middle" font-size="9" opacity="0.9">peak</text>');
+
+    // leaders + labels
+    if (opts.labels) {
+      placed.forEach(function (p) {
+        var yd = midY - A * p.s;
+        var baseline, endY;
+        if (p.side === 'top') { baseline = padTop + (nT - p.lane) * laneH - 4; endY = baseline + 3; }
+        else { baseline = yB + gap + p.lane * laneH + 12; endY = baseline - 11; }
+        out.push('<line x1="' + p.x.toFixed(1) + '" y1="' + yd.toFixed(1) + '" x2="' + p.lx.toFixed(1) + '" y2="' + endY.toFixed(1) + '" stroke="var(--grid-strong)" stroke-width="1"/>');
+        out.push('<text x="' + p.lx.toFixed(1) + '" y="' + baseline + '" text-anchor="middle" font-size="12">' + esc(p.it.name) + '</text>');
+      });
+    }
+    // dots
+    placed.forEach(function (p) {
+      var x = p.x, y = midY - A * p.s;
+      if (p.off) {
+        // normal to the curve at this point
+        var dydx = -A * Math.cos(p.it.phase * Math.PI / 180) * (2 * Math.PI / plotW);
+        var len = Math.sqrt(1 + dydx * dydx);
+        x += p.off * (-dydx / len); y += p.off * (1 / len);
+      }
+      var z = p.it.zone, color = 'var(--' + z.hue + ')';
+      if (z.solid) out.push('<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="' + dotR + '" fill="' + color + '" stroke="var(--surface)" stroke-width="2"/>');
+      else out.push('<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="' + (dotR - 0.6) + '" fill="var(--surface)" stroke="' + color + '" stroke-width="2.2"/>');
+      out.push('<circle class="hit" cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="14" fill="transparent" data-i="' + p.it.i + '" data-x="' + x.toFixed(1) + '" data-y="' + y.toFixed(1) + '" tabindex="0" role="button" aria-label="' + esc(p.it.name + ', ' + z.name + ', ' + p.it.latest) + '"/>');
+    });
+    out.push('</svg>');
+    panel.innerHTML = out.join('');
+    panel.dataset.w = W;
+  }
+
+  // tooltip
+  var tip = null, tipPanel = null;
+  function showTip(panel, hit) {
+    var it = ITEMS[+hit.dataset.i];
+    if (!tip) { tip = document.createElement('div'); tip.className = 'tip'; }
+    if (tipPanel !== panel) { if (tip.parentNode) tip.parentNode.removeChild(tip); panel.appendChild(tip); tipPanel = panel; }
+    var sector = SECTORS.filter(function (s) { return s.id === it.s; })[0];
+    tip.innerHTML = '<b>' + esc(it.name) + '</b>' +
+      '<span class="z">' + glyphSVG(it.zone, 14) + esc(it.zone.name) + ' · ' + esc(sector.name) + '</span>' +
+      '<span class="r">' + esc(it.gauge) + ': ' + esc(it.latest) + '</span>' +
+      '<span class="n">' + esc(it.note) + '</span>' +
+      '<span class="a">Reference: ' + esc(it.ref) + ' · as of ' + esc(it.asof) + '</span>';
+    var x = +hit.dataset.x, y = +hit.dataset.y, W = +panel.dataset.w;
+    var svg = panel.querySelector('svg'), rect = svg.getBoundingClientRect(), prect = panel.getBoundingClientRect();
+    var scale = rect.width / W;
+    var px = rect.left - prect.left + x * scale, py = rect.top - prect.top + y * scale;
+    var left = px + 16; if (left + 272 > panel.clientWidth) left = Math.max(6, px - 284);
+    tip.style.left = left + 'px'; tip.style.top = Math.max(4, py - 12) + 'px';
+    tip.hidden = false;
+  }
+  function hideTip() { if (tip) tip.hidden = true; }
+  document.addEventListener('mouseover', function (e) { var h = e.target.closest && e.target.closest('.hit'); if (h) showTip(h.closest('.panel'), h); });
+  document.addEventListener('mouseout', function (e) { var h = e.target.closest && e.target.closest('.hit'); if (h && !(e.relatedTarget && e.relatedTarget.closest && e.relatedTarget.closest('.tip'))) hideTip(); });
+  document.addEventListener('focusin', function (e) { var h = e.target.closest && e.target.closest('.hit'); if (h) showTip(h.closest('.panel'), h); });
+  document.addEventListener('focusout', function (e) { if (e.target.closest && e.target.closest('.hit')) hideTip(); });
+  document.addEventListener('click', function (e) { var h = e.target.closest && e.target.closest('.hit'); if (h) { showTip(h.closest('.panel'), h); e.stopPropagation(); } else if (!(e.target.closest && e.target.closest('.tip'))) hideTip(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') hideTip(); });
+
+  // legend with counts
+  function buildLegend() {
+    var el = document.getElementById('legend');
+    el.innerHTML = ZONES.map(function (z) {
+      var n = ITEMS.filter(function (it) { return it.zone === z; }).length;
+      return '<div class="z ' + z.id + '">' + glyphSVG(z, 18) + '<div class="name">' + esc(z.name) + '</div>' +
+        '<div class="count">' + n + ' of ' + ITEMS.length + '</div><div class="blurb">' + esc(z.blurb) + '</div></div>';
+    }).join('');
+  }
+
+  // signal columns
+  function buildSignals() {
+    var el = document.getElementById('signalCols');
+    var cols = [
+      { z: 'trough', title: 'At the bottom', lead: 'Price near its lows and supply leaving. The buyer’s hunting ground, with the caveat that troughs can last years.' },
+      { z: 'recovery', title: 'Thawing', lead: 'Off the lows and rising, usually before the consensus notices. Often the better risk-reward than the trough itself.' },
+      { z: 'peak', title: 'At the top', lead: 'Price near the high of its range with capacity responding. Momentum can run, but the easy money is behind.' }
+    ];
+    el.innerHTML = cols.map(function (c) {
+      var z = ZONES.filter(function (zz) { return zz.id === c.z; })[0];
+      var list = ITEMS.filter(function (it) { return it.zone === z; }).map(function (it) {
+        var sector = SECTORS.filter(function (s) { return s.id === it.s; })[0];
+        return '<li>' + esc(it.name) + '<span>' + esc(sector.name) + '</span></li>';
+      }).join('');
+      return '<div class="col"><h3>' + glyphSVG(z, 18) + esc(c.title) + '</h3><p>' + esc(c.lead) + '</p><ul>' + list + '</ul></div>';
+    }).join('');
+  }
+
+  // sector sections
+  function buildSectors() {
+    var root = document.getElementById('sectors');
+    root.innerHTML = SECTORS.map(function (s) {
+      var rows = ITEMS.filter(function (it) { return it.s === s.id; }).map(function (it) {
+        return '<tr><td class="name">' + esc(it.name) + '</td><td>' + esc(it.gauge) + '</td><td class="latest">' + esc(it.latest) + '</td>' +
+          '<td class="asof">' + esc(it.asof) + '</td><td class="phase"><span class="pill">' + glyphSVG(it.zone, 14) + esc(it.zone.name) + '</span></td>' +
+          '<td class="ref">' + esc(it.ref) + '</td><td class="note">' + esc(it.note) + '</td></tr>';
+      }).join('');
+      return '<section class="block" id="' + s.id + '"><div class="sechead"><h2>' + esc(s.name) + '</h2><p>' + esc(s.lead) + '</p></div>' +
+        '<div class="panel" data-sector="' + s.id + '"></div>' +
+        '<div class="tablewrap"><table><thead><tr><th>Industry</th><th>What we read</th><th>Latest</th><th>As of</th><th>Phase</th><th>Reference points</th><th>Why it sits there</th></tr></thead><tbody>' + rows + '</tbody></table></div></section>';
+    }).join('');
+  }
+
+  function renderAll() {
+    hideTip();
+    renderWave(document.getElementById('masterPanel'), ITEMS, { master: true, labels: false, label: 'All 59 gauges placed on one cycle wave' });
+    SECTORS.forEach(function (s) {
+      var panel = document.querySelector('.panel[data-sector="' + s.id + '"]');
+      renderWave(panel, ITEMS.filter(function (it) { return it.s === s.id; }), { labels: true, label: s.name + ' gauges on the cycle wave' });
+    });
+  }
+
+  buildLegend();
+  buildSignals();
+  buildSectors();
+  renderAll();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(renderAll);
+  var raf = 0, lastW = window.innerWidth;
+  window.addEventListener('resize', function () {
+    if (window.innerWidth === lastW) return;
+    lastW = window.innerWidth;
+    cancelAnimationFrame(raf); raf = requestAnimationFrame(renderAll);
+  });
+})();
+</script>
+</body>
+</html>

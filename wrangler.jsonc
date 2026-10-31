@@ -1,0 +1,10 @@
+{
+  // Static site on Cloudflare Workers (free plan). Deploy with: npx wrangler deploy
+  "name": "shabeelkandi-com",
+  "compatibility_date": "2026-10-31",
+  "assets": {
+    "directory": "./public",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  }
+}
