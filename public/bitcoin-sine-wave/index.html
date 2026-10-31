@@ -75,6 +75,7 @@ table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 14.
 th, td { text-align: left; vertical-align: top; padding: 9px 12px; border-top: 1px solid var(--grid); }
 th { font-family: var(--display); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; font-size: 12.5px; color: var(--muted); border-top: 0; white-space: nowrap; }
 td.num { font-family: var(--mono); font-size: 13px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.tablewrap.narrow table { min-width: 520px; }
 tr.shown td { font-weight: 600; }
 .callout { background: var(--callout); border-left: 3px solid var(--cold); padding: 14px 18px; display: grid; gap: 6px; border-radius: 0 6px 6px 0; }
 .callout p { font-size: 15px; color: var(--ink-2); max-width: 80ch; }
@@ -123,6 +124,31 @@ img { max-width: 100%; }
     </div>
     <div class="panel" id="vint"></div>
     <div class="legend"><span><i class="obs"></i>Reading at the time</span><span><i></i>Final fit, looking back</span></div>
+  </section>
+
+  <section class="block">
+    <div class="sechead">
+      <h2>Was it right? The record since 2019</h2>
+      <p>The chart above only shows that the reading rarely changed afterwards. This is the harder test. At every month since January 2019 the wave was fitted on the data available then, and its call was compared with what the price went on to do.</p>
+    </div>
+    <div class="tablewrap narrow"><table><thead><tr><th>Call made each month</th><th>Right</th><th>Best constant guess</th><th>Months tested</th></tr></thead><tbody>
+      <tr><td>Price will beat or lag its trend over the next 12 months, in the wave's direction</td><td class="num">80%</td><td class="num">54%</td><td class="num">82</td></tr>
+      <tr><td>The same call, 6 months ahead</td><td class="num">61%</td><td class="num">57%</td><td class="num">88</td></tr>
+    </tbody></table></div>
+    <div class="tablewrap narrow"><table><thead><tr><th>Turning point</th><th>Forecast made</th><th>Wave said</th><th>Miss</th></tr></thead><tbody>
+      <tr><td>Peak, Mar 2021 (+255% vs trend)</td><td>Mar 2020</td><td>Jun 2021</td><td class="num">3 months late</td></tr>
+      <tr><td>Trough, Dec 2022 (−54% vs trend)</td><td>Dec 2021</td><td>Aug 2023</td><td class="num">8 months late</td></tr>
+      <tr><td>Peak, Nov 2024 (+29% vs trend)</td><td>Nov 2023</td><td>Jan 2025</td><td class="num">2 months late</td></tr>
+    </tbody></table></div>
+    <div class="tablewrap narrow"><table><thead><tr><th>Month</th><th>Close</th><th>What the wave said at the time</th></tr></thead><tbody>
+      <tr><td>Nov 2021, the first nominal peak</td><td class="num">$57,005</td><td>53% through the cycle, at the peak</td></tr>
+      <tr><td>Dec 2022, the bottom</td><td class="num">$16,547</td><td>94% through the cycle, at the trough</td></tr>
+      <tr><td>Jul 2025, the latest peak by month-end close</td><td class="num">$115,758</td><td>58% through the cycle, at the peak</td></tr>
+    </tbody></table></div>
+    <div class="callout">
+      <h3>Two cycles is not a track record</h3>
+      <p>Those 82 months are not 82 independent bets. With a 42-month wave, 2019 to 2026 holds about two cycles, so the hit rate comes from being right through roughly one rise and one fall. The wave has also been late at every turning point so far, which is tolerable at a bottom and expensive at a top.</p>
+    </div>
   </section>
 
   <section class="block">
